@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: 'yvettehe-planview/let_them_review'
-          path: 'review-bot'
+          path: 'let_them_review'
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
@@ -30,15 +30,14 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f "review-bot/requirements.txt" ]; then
-            pip install -r review-bot/requirements.txt
+          if [ -f "let_them_review/requirements.txt" ]; then
+            pip install -r let_them_review/requirements.txt
           fi
 
       - name: Run review bot
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_PR_NUMBER: ${{ github.event.number }}
           GITHUB_PR_TITLE: ${{ github.event.pull_request.title }}
@@ -49,6 +48,7 @@ jobs:
           PR_NUMBER: ${{ github.event.number }}
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
+          FALCON_API_KEY: ${{secrets.FALCON_API_KEY}}
         run: |
-          cd review-bot
-          python src/bots/review_bot.py
+          cd let_them_review
+          python src/bots/run_review.py "${{ github.repository }}" "${{ github.event.number }}"
