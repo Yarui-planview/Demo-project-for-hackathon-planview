@@ -36,8 +36,8 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           # Install review bot dependencies
-          if [ -f review-bot-repo/requirements.txt ]; then
-            pip install -r review-bot-repo/requirements.txt
+          if [ -f let_them_review/requirements.txt ]; then
+            pip install -r let_them_review/requirements.txt
           fi
 
       - name: Run review bot
@@ -57,5 +57,5 @@ jobs:
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
         run: |
-          cd review-bot-repo
+          cd let_them_review
           python src/bots/review_bot.py
