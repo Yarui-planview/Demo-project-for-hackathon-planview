@@ -3,6 +3,8 @@ import { musicAPI } from './services/api';
 import SongList from './components/SongList';
 import AddSongForm from './components/AddSongForm';
 import SearchBar from './components/SearchBar';
+import QuickStats from './components/QuickStats';
+import QuickStats from './components/QuickStats';
 
 function App() {
   const [songs, setSongs] = useState([]);
@@ -158,6 +160,9 @@ function App() {
             onSearch={handleSearch}
           />
         </div>
+
+        {/* Quick Stats */}
+        <QuickStats songs={songs} />
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
