@@ -4,6 +4,7 @@ import SongList from './components/SongList';
 import AddSongForm from './components/AddSongForm';
 import SearchBar from './components/SearchBar';
 import QuickStats from './components/QuickStats';
+import QuickStats from './components/QuickStats';
 
 function App() {
   const [songs, setSongs] = useState([]);

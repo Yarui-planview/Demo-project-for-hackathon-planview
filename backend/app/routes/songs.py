@@ -28,6 +28,57 @@ async def get_song(song_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Song not found")
     return song
 
+@router.get("/stats", response_model=dict)
+async def get_library_stats(db: Session = Depends(get_db)):
+    """Get comprehensive library statistics"""
+    song_service = SongService(db)
+    songs = song_service.get_songs(skip=0, limit=10000)  # Get all songs for stats
+    
+    if not songs:
+        return {
+            "total_songs": 0,
+            "total_artists": 0,
+            "total_albums": 0,
+            "total_genres": 0,
+            "total_duration": 0,
+            "average_song_duration": 0,
+            "top_artist": None,
+            "top_genre": None,
+            "recent_additions": []
+        }
+    
+    # Calculate basic stats
+    artists = set(song.artist for song in songs)
+    albums = set(song.album for song in songs if song.album)
+    genres = set(song.genre for song in songs if song.genre)
+    
+    total_duration = sum(song.duration for song in songs if song.duration)
+    avg_duration = total_duration // len(songs) if songs else 0
+    
+    # Find top artist
+    from collections import Counter
+    artist_counts = Counter(song.artist for song in songs)
+    top_artist = artist_counts.most_common(1)[0] if artist_counts else None
+    
+    # Find top genre
+    genre_counts = Counter(song.genre for song in songs if song.genre)
+    top_genre = genre_counts.most_common(1)[0] if genre_counts else None
+    
+    # Get recent additions (last 5)
+    recent_songs = sorted(songs, key=lambda x: x.created_at, reverse=True)[:5]
+    
+    return {
+        "total_songs": len(songs),
+        "total_artists": len(artists),
+        "total_albums": len(albums), 
+        "total_genres": len(genres),
+        "total_duration": total_duration,
+        "average_song_duration": avg_duration,
+        "top_artist": {"name": top_artist[0], "count": top_artist[1]} if top_artist else None,
+        "top_genre": {"name": top_genre[0], "count": top_genre[1]} if top_genre else None,
+        "recent_additions": [{"id": song.id, "title": song.title, "artist": song.artist} for song in recent_songs]
+    }
+
 @router.post("/songs", response_model=SongResponse, status_code=201)
 async def create_song(song: SongCreate, db: Session = Depends(get_db)):
     """Create a new song"""
