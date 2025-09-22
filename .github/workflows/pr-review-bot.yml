@@ -18,7 +18,7 @@ jobs:
       - name: Checkout review bot repository
         uses: actions/checkout@v4
         with:
-          repository: 'let_them_review'
+          repository: 'yvettehe-planview/let_them_review'
           path: 'review-bot'
           token: ${{ secrets.GITHUB_TOKEN }}
 
