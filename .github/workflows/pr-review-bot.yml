@@ -51,4 +51,4 @@ jobs:
           FALCON_API_KEY: ${{secrets.FALCON_API_KEY}}
         run: |
           cd let_them_review
-          python src/bots/run_review.py "${{ github.repository }}" "${{ github.event.number }}"
+          python run_review.py "${{ github.repository }}" "${{ github.event.number }}"
