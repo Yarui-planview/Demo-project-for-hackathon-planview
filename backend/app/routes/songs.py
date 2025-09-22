@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from typing import List, Optional
 
 from ..models import SongCreate, SongUpdate, SongResponse
@@ -72,3 +73,39 @@ async def get_songs_by_genre(genre: str, db: Session = Depends(get_db)):
     song_service = SongService(db)
     songs = song_service.get_songs_by_genre(genre)
     return songs
+
+@router.get("/stats")
+async def get_library_stats(db: Session = Depends(get_db)):
+    """Get library statistics"""
+    song_service = SongService(db)
+    
+    # Get basic counts
+    total_songs = len(song_service.get_songs())
+    
+    # Get all songs for detailed stats
+    all_songs = song_service.get_songs(limit=10000)  # Get all songs
+    
+    # Calculate statistics
+    total_duration = sum(song.duration for song in all_songs if song.duration)
+    unique_artists = len(set(song.artist for song in all_songs))
+    unique_albums = len(set(song.album for song in all_songs if song.album))
+    unique_genres = len(set(song.genre for song in all_songs if song.genre))
+    
+    # Calculate average year
+    songs_with_year = [song for song in all_songs if song.year]
+    avg_year = sum(song.year for song in songs_with_year) / len(songs_with_year) if songs_with_year else None
+    
+    # Calculate average duration
+    songs_with_duration = [song for song in all_songs if song.duration]
+    avg_duration = sum(song.duration for song in songs_with_duration) / len(songs_with_duration) if songs_with_duration else None
+    
+    return {
+        "total_songs": total_songs,
+        "total_duration": total_duration,
+        "unique_artists": unique_artists,
+        "unique_albums": unique_albums,
+        "unique_genres": unique_genres,
+        "average_year": round(avg_year) if avg_year else None,
+        "average_duration": round(avg_duration) if avg_duration else None,
+        "genres": list(set(song.genre for song in all_songs if song.genre))[:20]  # Top 20 genres
+    }
