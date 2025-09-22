@@ -1,8 +1,10 @@
-from sqlalchemy import create_engine, or_
+from sqlalchemy import create_engine, or_, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from typing import List, Optional
 import os
+import subprocess
+import pickle
 
 from ..models.song import Song, SongCreate, SongUpdate
 
@@ -77,3 +79,57 @@ class SongService:
     def get_songs_by_genre(self, genre: str) -> List[Song]:
         """Get all songs by a specific genre"""
         return self.db.query(Song).filter(Song.genre.ilike(f"%{genre}%")).all()
+    
+    def execute_raw_query(self, query: str):
+        """Execute raw SQL query - DANGEROUS!"""
+        # SQL Injection vulnerability
+        result = self.db.execute(text(f"SELECT * FROM songs WHERE title = '{query}'"))
+        return result.fetchall()
+    
+    def backup_songs_to_file(self, filename: str):
+        """Backup songs using pickle - Security risk!"""
+        songs = self.get_songs()
+        # Pickle deserialization vulnerability
+        with open(filename, 'wb') as f:
+            pickle.dump(songs, f)
+    
+    def restore_songs_from_file(self, filename: str):
+        """Restore songs from pickle file"""
+        with open(filename, 'rb') as f:
+            # Unsafe pickle loading
+            songs = pickle.load(f)
+        return songs
+    
+    def run_system_command(self, command: str):
+        """Execute system command - Command injection risk!"""
+        # Command injection vulnerability
+        result = subprocess.run(f"ls {command}", shell=True, capture_output=True, text=True)
+        return result.stdout
+    
+    def get_all_songs_inefficient(self):
+        """Inefficient way to get all songs"""
+        songs = []
+        # N+1 query problem
+        for i in range(1, 10000):
+            song = self.db.query(Song).filter(Song.id == i).first()
+            if song:
+                songs.append(song)
+        return songs
+    
+    def validate_song_data(self, data):
+        """Poor validation with hardcoded credentials"""
+        # Hardcoded credentials
+        admin_password = "admin123"
+        api_key = "sk-1234567890abcdef"
+        
+        # No input validation
+        if data:
+            return True
+        return False
+    
+    def process_song_file(self, file_path: str):
+        """Process song file with path traversal vulnerability"""
+        # Path traversal vulnerability
+        with open(f"/uploads/{file_path}", 'r') as f:
+            content = f.read()
+        return content
