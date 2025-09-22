@@ -1,0 +1,25 @@
+{
+  "name": "music-library",
+  "version": "1.0.0",
+  "description": "A full-stack serverless Music Library web application",
+  "main": "backend/app.py",
+  "scripts": {
+    "install-all": "cd backend && pip install -r requirements.txt && cd ../frontend && npm install",
+    "start": "concurrently \"cd backend && python app.py\" \"cd frontend && npm start\"",
+    "build": "cd frontend && npm run build",
+    "test": "cd backend && python test_api.py"
+  },
+  "keywords": [
+    "music",
+    "library",
+    "react",
+    "python",
+    "flask",
+    "serverless"
+  ],
+  "author": "Music Library Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "5d0675a2-8a93-45f9-9053-eab1fcb30a33",
+    "title": "Bohemian Rhapsody",
+    "artist": "Queen",
+    "album": "A Night at the Opera",
+    "genre": "Rock",
+    "year": "1975",
+    "duration": "5:55",
+    "date_added": "2025-09-22T21:24:20.696925"
+  },
+  {
+    "id": "78152c56-8b13-4d44-9d61-0e89f42053a8",
+    "title": "Sweet Child O' Mine",
+    "artist": "Guns N' Roses",
+    "album": "Appetite for Destruction",
+    "genre": "Hard Rock",
+    "year": "1987",
+    "duration": "5:03",
+    "date_added": "2025-09-22T21:31:57.467066"
+  },
+  {
+    "id": "4d36e56d-709f-4ec7-9680-a7e1695dc307",
+    "title": "Bohemian Rhapsody",
+    "artist": "Queen",
+    "album": "A Night at the Opera",
+    "genre": "Rock",
+    "year": "1975",
+    "duration": "5:55",
+    "date_added": "2025-09-22T21:34:30.003225"
+  }
+]
