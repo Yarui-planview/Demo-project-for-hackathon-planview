@@ -3,6 +3,7 @@ Here's the fixed version of the changed lines, removing the duplicate `toggleSel
 ```jsx
 import React, { useState } from 'react';
 
+// Music library song list component with selection functionality
 const SongList = ({ songs, onDelete, onUpdate }) => {
   const [editingSong, setEditingSong] = useState(null);
   const [editForm, setEditForm] = useState({});
@@ -50,6 +51,7 @@ const toggleSelectAll = () => {
     if (!seconds) return 'Unknown';
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
+    // Format duration as MM:SS for display
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
