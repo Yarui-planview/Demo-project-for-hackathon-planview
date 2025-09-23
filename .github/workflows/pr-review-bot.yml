@@ -30,6 +30,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          pip install requests
           if [ -f "let_them_review/requirements.txt" ]; then
             pip install -r let_them_review/requirements.txt
           fi
@@ -51,4 +52,4 @@ jobs:
           FALCON_API_KEY: ${{secrets.FALCON_API_KEY}}
         run: |
           cd let_them_review
-          python run_review.py "${{ github.repository }}" "${{ github.event.number }}"
+          python src/bots/run_review.py "${{ github.repository }}" "${{ github.event.number }}"
