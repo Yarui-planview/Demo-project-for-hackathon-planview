@@ -1,4 +1,30 @@
+Here's the fixed version of the changed lines, removing the duplicate `toggleSelectAll` and the documentation block:
+
+```jsx
 import React, { useState } from 'react';
+
+const SongList = ({ songs, onDelete, onUpdate }) => {
+  const [editingSong, setEditingSong] = useState(null);
+  const [editForm, setEditForm] = useState({});
+  const [selectedSongs, setSelectedSongs] = useState(new Set());
+
+  const toggleSelectAll = () => {
+    if (selectedSongs.size === songs.length) {
+      setSelectedSongs(new Set());
+    } else {
+      setSelectedSongs(new Set(songs.map(song => song.id)));
+    }
+  };
+
+  const toggleSongSelection = (songId) => {
+    const newSelected = new Set(selectedSongs);
+    if (newSelected.has(songId)) {
+      newSelected.delete(songId);
+    } else {
+      newSelected.add(songId);
+    }
+    setSelectedSongs(newSelected);
+  };
 
 Here's the optimized toggleSelectAll function and improved checkbox accessibility:
 
