@@ -1,4 +1,32 @@
-Based on the review comments, here are the fixes focusing on the security and type hinting issues:
+Here's the fixed code for the identified issues in the changed lines, specifically addressing the path traversal vulnerability and redundant path resolution:
+
+```python
+def process_song_file(self, file_path: str) -> str:
+    try:
+        base_path = os.path.abspath('/uploads')
+        safe_path = os.path.abspath(os.path.join(base_path, os.path.basename(file_path)))
+        
+        # Ensure the resolved path is within the uploads directory
+        if not safe_path.startswith(base_path):
+            raise ValueError("Invalid path - attempted directory traversal")
+            
+        # Validate file extension
+        allowed_extensions = {'.mp3', '.wav', '.flac'}
+        if not os.path.splitext(safe_path)[1].lower() in allowed_extensions:
+            raise ValueError("Invalid file type")
+            
+        if not os.path.exists(safe_path):
+            raise FileNotFoundError("File not found")
+            
+        with open(safe_path, 'r') as f:
+            return f.read()
+    except FileNotFoundError:
+        raise ValueError("File not found")
+    except PermissionError:
+        raise ValueError("Permission denied")
+    except Exception as e:
+        logger.error(f"Error processing song file: {e}")
+        raise SongServiceError("Failed to process song file")
 
 ```diff
 -    def validate_song_data(self, data: Dict[str, Any]) -> bool:
