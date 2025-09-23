@@ -1,6 +1,21 @@
 import React, { useState } from 'react';
 
-const SongList = ({ songs, onDelete, onUpdate }) => {
+Here's the optimized toggleSelectAll function and improved checkbox accessibility:
+
+```jsx
+const toggleSelectAll = () => {
+  setSelectedSongs(selectedSongs.size === songs.length ? new Set() : new Set(songs.map(song => song.id)));
+};
+
+// In the checkbox input element:
+<input
+  type="checkbox"
+  checked={selectedSongs.size === songs.length && songs.length > 0}
+  onChange={toggleSelectAll}
+  className="mr-2 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+  aria-label="Select all songs"
+  role="checkbox"
+/>
   const [editingSong, setEditingSong] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [selectedSongs, setSelectedSongs] = useState(new Set());
