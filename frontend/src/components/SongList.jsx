@@ -1,8 +1,50 @@
+Here's the fixed version of the changed lines, removing the duplicate `toggleSelectAll` and the documentation block:
+
+```jsx
 import React, { useState } from 'react';
 
 const SongList = ({ songs, onDelete, onUpdate }) => {
   const [editingSong, setEditingSong] = useState(null);
   const [editForm, setEditForm] = useState({});
+  const [selectedSongs, setSelectedSongs] = useState(new Set());
+
+  const toggleSelectAll = () => {
+    if (selectedSongs.size === songs.length) {
+      setSelectedSongs(new Set());
+    } else {
+      setSelectedSongs(new Set(songs.map(song => song.id)));
+    }
+  };
+
+  const toggleSongSelection = (songId) => {
+    const newSelected = new Set(selectedSongs);
+    if (newSelected.has(songId)) {
+      newSelected.delete(songId);
+    } else {
+      newSelected.add(songId);
+    }
+    setSelectedSongs(newSelected);
+  };
+
+Here's the optimized toggleSelectAll function and improved checkbox accessibility:
+
+```jsx
+const toggleSelectAll = () => {
+  setSelectedSongs(selectedSongs.size === songs.length ? new Set() : new Set(songs.map(song => song.id)));
+};
+
+// In the checkbox input element:
+<input
+  type="checkbox"
+  checked={selectedSongs.size === songs.length && songs.length > 0}
+  onChange={toggleSelectAll}
+  className="mr-2 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+  aria-label="Select all songs"
+  role="checkbox"
+/>
+  const [editingSong, setEditingSong] = useState(null);
+  const [editForm, setEditForm] = useState({});
+  const [selectedSongs, setSelectedSongs] = useState(new Set());
 
   const formatDuration = (seconds) => {
     if (!seconds) return 'Unknown';
@@ -34,12 +76,30 @@ const SongList = ({ songs, onDelete, onUpdate }) => {
     }));
   };
 
+  const toggleSelectAll = () => {
+    if (selectedSongs.size === songs.length) {
+      setSelectedSongs(new Set());
+    } else {
+      setSelectedSongs(new Set(songs.map(song => song.id)));
+    }
+  };
+
+  const toggleSongSelection = (songId) => {
+    const newSelected = new Set(selectedSongs);
+    if (newSelected.has(songId)) {
+      newSelected.delete(songId);
+    } else {
+      newSelected.add(songId);
+    }
+    setSelectedSongs(newSelected);
+  };
+
   if (songs.length === 0) {
     return (
       <div className="text-center py-12">
         <div className="text-4xl mb-4">🎵</div>
         <h3 className="text-lg font-medium text-gray-900 mb-2">No songs found</h3>
-        <p className="text-gray-600">Add your first song to get started!</p>
+        <p className="text-gray-600">Your music library is empty - add some songs to get started!</p>
       </div>
     );
   }
@@ -47,9 +107,22 @@ const SongList = ({ songs, onDelete, onUpdate }) => {
   return (
     <div className="bg-white shadow rounded-lg overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-200">
-        <h2 className="text-lg font-medium text-gray-900">
-          Your Music Library ({songs.length} songs)
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-medium text-gray-900">
+            Your Music Library ({songs.length} songs)
+          </h2>
+          <div className="flex items-center space-x-3">
+            <label className="flex items-center text-sm text-gray-600">
+              <input
+                type="checkbox"
+                checked={selectedSongs.size === songs.length && songs.length > 0}
+                onChange={toggleSelectAll}
+                className="mr-2 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+              />
+              Select All ({selectedSongs.size})
+            </label>
+          </div>
+        </div>
       </div>
       
       <div className="divide-y divide-gray-200">
