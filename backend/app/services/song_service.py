@@ -1,4 +1,25 @@
-import logging
+Based on the review comments, here are the fixes focusing on the security and type hinting issues:
+
+```diff
+-    def validate_song_data(self, data: Dict[str, Any]) -> bool:
++    def validate_song_data(self, data: Dict[str, Any]) -> bool:
+         if not isinstance(data, dict):
+             return False
+         required_fields = ['title', 'artist']
+-        return all(field in data for field in required_fields)
++        return all(field in data and isinstance(data[field], str) for field in required_fields)
+
+     def process_song_file(self, file_path: str) -> str:
+         try:
+-            safe_path = Path("/uploads").resolve().joinpath(Path(file_path).name)
++            base_path = Path("/uploads").resolve()
++            safe_path = os.path.realpath(os.path.join(base_path, os.path.basename(file_path)))
+             if not str(safe_path).startswith("/uploads"):
+                 raise ValueError("Invalid path")
++            if not os.path.exists(safe_path):
++                raise FileNotFoundError("File not found")
+             with open(safe_path, 'r') as f:
+                 return f.read()
 from pathlib import Path
 from sqlalchemy import create_engine, or_, text
 from sqlalchemy.ext.declarative import declarative_base
