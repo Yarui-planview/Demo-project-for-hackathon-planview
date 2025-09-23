@@ -40,7 +40,7 @@ export const musicAPI = {
   
   // Get songs by genre
   getSongsByGenre: (genre) => 
-    TODO
+    api.get(`/genres/${encodeURIComponent(genre)}/songs`),
 };
 
 export default musicAPI;
