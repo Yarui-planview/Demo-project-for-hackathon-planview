@@ -16,6 +16,7 @@ jobs:
       bot_name: ${{ steps.parse.outputs.bot_name }}
       instruction: ${{ steps.parse.outputs.instruction }}
       should_proceed: ${{ steps.parse.outputs.should_proceed }}
+      pr_number: ${{ steps.parse.outputs.pr_number }}
     
     steps:
       - name: Debug Event Context
@@ -100,6 +101,7 @@ jobs:
               console.log(`✅ Found bot mention: ${botName}`);
               core.setOutput('bot_name', botName);
               core.setOutput('instruction', commentBody);
+              core.setOutput('pr_number', prNumber);
               core.setOutput('should_proceed', 'true');
             } else {
               console.log('❌ No bot mention found');
@@ -143,10 +145,10 @@ jobs:
           echo "  Bot Name: ${{ needs.parse-comment.outputs.bot_name }}"
           echo "  Instruction: ${{ needs.parse-comment.outputs.instruction }}"
           echo "  Repository: ${{ github.repository }}"
-          echo "  PR Number: ${{ github.event.issue.number || github.event.pull_request.number }}"
+          echo "  PR Number: ${{ needs.parse-comment.outputs.pr_number }}"
           
           python3 bot_trigger.py \
             --bot_name "${{ needs.parse-comment.outputs.bot_name }}" \
             --instruction "${{ needs.parse-comment.outputs.instruction }}" \
             --repo_name "${{ github.repository }}" \
-            --pr_number "${{ github.event.issue.number || github.event.pull_request.number }}"
+            --pr_number "${{ needs.parse-comment.outputs.pr_number }}"
