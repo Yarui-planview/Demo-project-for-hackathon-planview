@@ -17,6 +17,8 @@ jobs:
       instruction: ${{ steps.parse.outputs.instruction }}
       should_proceed: ${{ steps.parse.outputs.should_proceed }}
       pr_number: ${{ steps.parse.outputs.pr_number }}
+      comment_id: ${{ steps.parse.outputs.comment_id }}
+      comment_type: ${{ steps.parse.outputs.comment_type }}
     
     steps:
       - name: Debug Event Context
@@ -34,7 +36,7 @@ jobs:
             console.log('Event name:', context.eventName);
             console.log('Payload keys:', Object.keys(context.payload));
             // Handle both issue comments and PR review comments
-            let prNumber, prOwner, commentAuthor, commentBody;
+            let prNumber, prOwner, commentAuthor, commentBody, commentId, commentType;
             
             if (context.payload.issue) {
               // Regular PR comment (issue_comment event)
@@ -47,12 +49,16 @@ jobs:
               prOwner = pr.data.user.login;
               commentAuthor = context.payload.comment.user.login;
               commentBody = context.payload.comment.body;
+              commentId = context.payload.comment.id;
+              commentType = 'issue_comment';
             } else if (context.payload.pull_request) {
               // PR review comment (pull_request_review_comment event)
               prNumber = context.payload.pull_request.number;
               prOwner = context.payload.pull_request.user.login;
               commentAuthor = context.payload.comment.user.login;
               commentBody = context.payload.comment.body;
+              commentId = context.payload.comment.id;
+              commentType = 'review_comment';
             } else {
               console.log('❌ Unable to determine comment context');
               core.setOutput('should_proceed', 'false');
@@ -102,6 +108,8 @@ jobs:
               core.setOutput('bot_name', botName);
               core.setOutput('instruction', commentBody);
               core.setOutput('pr_number', prNumber);
+              core.setOutput('comment_id', commentId);
+              core.setOutput('comment_type', commentType);
               core.setOutput('should_proceed', 'true');
             } else {
               console.log('❌ No bot mention found');
@@ -146,9 +154,13 @@ jobs:
           echo "  Instruction: ${{ needs.parse-comment.outputs.instruction }}"
           echo "  Repository: ${{ github.repository }}"
           echo "  PR Number: ${{ needs.parse-comment.outputs.pr_number }}"
+          echo "  Comment ID: ${{ needs.parse-comment.outputs.comment_id }}"
+          echo "  Comment Type: ${{ needs.parse-comment.outputs.comment_type }}"
           
           python3 bot_trigger.py \
             --bot_name "${{ needs.parse-comment.outputs.bot_name }}" \
             --instruction "${{ needs.parse-comment.outputs.instruction }}" \
             --repo_name "${{ github.repository }}" \
-            --pr_number "${{ needs.parse-comment.outputs.pr_number }}"
+            --pr_number "${{ needs.parse-comment.outputs.pr_number }}" \
+            --comment_id "${{ needs.parse-comment.outputs.comment_id }}" \
+            --comment_type "${{ needs.parse-comment.outputs.comment_type }}"
