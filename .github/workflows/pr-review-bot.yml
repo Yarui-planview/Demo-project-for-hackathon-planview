@@ -36,17 +36,6 @@ jobs:
       - name: Run review bot
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN  }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_PR_NUMBER: ${{ github.event.number }}
-          GITHUB_PR_TITLE: ${{ github.event.pull_request.title }}
-          GITHUB_PR_AUTHOR: ${{ github.event.pull_request.user.login }}
-          GITHUB_BASE_REF: ${{ github.base_ref }}
-          GITHUB_HEAD_REF: ${{ github.head_ref }}
-          GITHUB_WORKSPACE: ${{ github.workspace }}
-          PR_NUMBER: ${{ github.event.number }}
-          REPO_OWNER: ${{ github.repository_owner }}
-          REPO_NAME: ${{ github.event.repository.name }}
           FALCON_API_KEY: ${{secrets.FALCON_API_KEY}}
         run: |
           cd let_them_review

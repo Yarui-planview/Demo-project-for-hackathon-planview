@@ -11,7 +11,6 @@ on:
 jobs:
   parse-comment:
     runs-on: ubuntu-latest
-    # Remove restrictive condition - let all comment events through and filter in script
     outputs:
       bot_name: ${{ steps.parse.outputs.bot_name }}
       instruction: ${{ steps.parse.outputs.instruction }}
@@ -147,18 +146,12 @@ jobs:
       - name: Execute bot
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           FALCON_API_KEY: ${{ secrets.FALCON_API_KEY }}
         run: |
           cd let_them_review
           echo "🤖 Executing bot with parameters:"
-          echo "test"
           echo "  Bot Name: ${{ needs.parse-comment.outputs.bot_name }}"
-          echo "  Instruction: ${{ needs.parse-comment.outputs.instruction }}"
-          echo "  Repository: ${{ github.repository }}"
-          echo "  PR Number: ${{ needs.parse-comment.outputs.pr_number }}"
-          echo "  Comment ID: ${{ needs.parse-comment.outputs.comment_id }}"
-          echo "  Comment Type: ${{ needs.parse-comment.outputs.comment_type }}"
+          echo "  Is{{ needs.parse-comment.outputs.comment_type }}"
           
           python3 bot_trigger.py \
             --bot_name "${{ needs.parse-comment.outputs.bot_name }}" \
