@@ -72,8 +72,10 @@ jobs:
             // Check if comment is from bot
             const isBot = commentAuthor.includes('bot') || commentAuthor.includes('[bot]');
             
-            // Check if comment is from PR owner
-            const isFromOwner = prOwner === commentAuthor;
+            // Check if comment is from PR owner or repo owner
+            const isFromPROwner = prOwner === commentAuthor;
+            const isFromRepoOwner = context.repo.owner === commentAuthor;
+            const isAuthorized = isFromPROwner || isFromRepoOwner;
             
             if (isBot) {
               console.log('❌ Comment is from bot, ignoring');
@@ -81,8 +83,8 @@ jobs:
               return;
             }
             
-            if (!isFromOwner) {
-              console.log('❌ Comment is not from PR owner, ignoring');
+            if (!isAuthorized) {
+              console.log('❌ Comment is not from PR owner or repo owner, ignoring');
               core.setOutput('should_proceed', 'false');
               return;
             }
