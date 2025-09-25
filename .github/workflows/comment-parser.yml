@@ -150,6 +150,7 @@ jobs:
         run: |
           cd let_them_review
           echo "🤖 Executing bot with parameters:"
+          echo "test"
           echo "  Bot Name: ${{ needs.parse-comment.outputs.bot_name }}"
           echo "  Instruction: ${{ needs.parse-comment.outputs.instruction }}"
           echo "  Repository: ${{ github.repository }}"
