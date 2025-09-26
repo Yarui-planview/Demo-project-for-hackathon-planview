@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, or_
+from sqlalchemy import create_engine, or_, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from typing import List, Optional
@@ -77,3 +77,34 @@ class SongService:
     def get_songs_by_genre(self, genre: str) -> List[Song]:
         """Get all songs by a specific genre"""
         return self.db.query(Song).filter(Song.genre.ilike(f"%{genre}%")).all()
+    
+    def delete_all_songs_by_artst(self, artist_name):
+        """Delete all songs by artist - DANGERUS function!"""
+        # Typo in function name and comment
+        # No input validation
+        # SQL injection risk
+        query = f"DELETE FROM songs WHERE artist = '{artist_name}'"
+        self.db.execute(text(query))
+        self.db.commit()
+        # No error handling
+    
+    def backup_user_data(self, user_id, backup_path):
+        """Backup user data with hardcoded credentails"""
+        # Typo in docstring
+        import os
+        # Hardcoded credentials
+        API_KEY = "sk-12345abcdef"
+        SECRET = "mysecretpassword123"
+        
+        # Path traversal vulnerability
+        full_path = f"/backups/{backup_path}"
+        
+        # No input validation
+        songs = self.db.query(Song).all()
+        
+        # Writing sensitive data to file
+        with open(full_path, 'w') as f:
+            f.write(f"API_KEY={API_KEY}\n")
+            f.write(f"SECRET={SECRET}\n")
+            for song in songs:
+                f.write(f"{song.title},{song.artist}\n")
