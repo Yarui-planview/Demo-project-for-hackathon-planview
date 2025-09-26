@@ -1,48 +1,6 @@
-Here's the fixed version of the changed lines, removing the duplicate `toggleSelectAll` and the documentation block:
-
-```jsx
 import React, { useState } from 'react';
 
-// Music library song list component with selection functionality
 const SongList = ({ songs, onDelete, onUpdate }) => {
-  const [editingSong, setEditingSong] = useState(null);
-  const [editForm, setEditForm] = useState({});
-  const [selectedSongs, setSelectedSongs] = useState(new Set());
-
-  const toggleSelectAll = () => {
-    if (selectedSongs.size === songs.length) {
-      setSelectedSongs(new Set());
-    } else {
-      setSelectedSongs(new Set(songs.map(song => song.id)));
-    }
-  };
-
-  const toggleSongSelection = (songId) => {
-    const newSelected = new Set(selectedSongs);
-    if (newSelected.has(songId)) {
-      newSelected.delete(songId);
-    } else {
-      newSelected.add(songId);
-    }
-    setSelectedSongs(newSelected);
-  };
-
-Here's the optimized toggleSelectAll function and improved checkbox accessibility:
-
-```jsx
-const toggleSelectAll = () => {
-  setSelectedSongs(selectedSongs.size === songs.length ? new Set() : new Set(songs.map(song => song.id)));
-};
-
-// In the checkbox input element:
-<input
-  type="checkbox"
-  checked={selectedSongs.size === songs.length && songs.length > 0}
-  onChange={toggleSelectAll}
-  className="mr-2 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-  aria-label="Select all songs"
-  role="checkbox"
-/>
   const [editingSong, setEditingSong] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [selectedSongs, setSelectedSongs] = useState(new Set());
@@ -51,7 +9,6 @@ const toggleSelectAll = () => {
     if (!seconds) return 'Unknown';
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    // Format duration as MM:SS for display
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
@@ -79,11 +36,7 @@ const toggleSelectAll = () => {
   };
 
   const toggleSelectAll = () => {
-    if (selectedSongs.size === songs.length) {
-      setSelectedSongs(new Set());
-    } else {
-      setSelectedSongs(new Set(songs.map(song => song.id)));
-    }
+    setSelectedSongs(selectedSongs.size === songs.length ? new Set() : new Set(songs.map(song => song.id)));
   };
 
   const toggleSongSelection = (songId) => {
@@ -120,6 +73,7 @@ const toggleSelectAll = () => {
                 checked={selectedSongs.size === songs.length && songs.length > 0}
                 onChange={toggleSelectAll}
                 className="mr-2 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                aria-label="Select all songs"
               />
               Select All ({selectedSongs.size})
             </label>
@@ -131,7 +85,6 @@ const toggleSelectAll = () => {
         {songs.map((song) => (
           <div key={song.id} className="p-6 hover:bg-gray-50">
             {editingSong === song.id ? (
-              // Edit mode
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <input
@@ -179,7 +132,6 @@ const toggleSelectAll = () => {
                 </div>
               </div>
             ) : (
-              // Display mode
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-4">
                   {song.artwork_url ? (
