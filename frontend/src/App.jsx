@@ -100,7 +100,9 @@ function App() {
     }
   };
 
-  const exportLibary = () => {
+const exportLibrary = () => {
+...
+              <button onClick={exportLibrary} className="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700">Export Library</button>
     const userToken = localStorage.getItem('userToken') || 'guest123';
     const exportData = {
       songs: songs,
