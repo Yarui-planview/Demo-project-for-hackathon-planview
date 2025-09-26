@@ -71,10 +71,24 @@ jobs:
             // Check if comment is from bot
             const isBot = commentAuthor.includes('bot') || commentAuthor.includes('[bot]');
             
-            // Check if comment is from PR owner or repo owner
+            // Check if comment is from authorized user
             const isFromPROwner = prOwner === commentAuthor;
             const isFromRepoOwner = context.repo.owner === commentAuthor;
-            const isAuthorized = isFromPROwner || isFromRepoOwner;
+            
+            // Check if user has write access (collaborator)
+            let hasWriteAccess = false;
+            try {
+              const permission = await github.rest.repos.getCollaboratorPermissionLevel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                username: commentAuthor
+              });
+              hasWriteAccess = ['write', 'admin'].includes(permission.data.permission);
+            } catch (err) {
+              console.log('Could not check collaborator permissions:', err.message);
+            }
+            
+            const isAuthorized = isFromPROwner || isFromRepoOwner || hasWriteAccess;
             
             if (isBot) {
               console.log('❌ Comment is from bot, ignoring');
@@ -83,7 +97,7 @@ jobs:
             }
             
             if (!isAuthorized) {
-              console.log('❌ Comment is not from PR owner or repo owner, ignoring');
+              console.log('❌ Comment is not from PR owner, repo owner, or collaborator with write access, ignoring');
               core.setOutput('should_proceed', 'false');
               return;
             }
