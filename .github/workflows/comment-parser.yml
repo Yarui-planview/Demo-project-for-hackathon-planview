@@ -32,6 +32,7 @@ jobs:
         with:
           script: |
             console.log('🚀 Workflow triggered!');
+            console.log('test');
             console.log('Event name:', context.eventName);
             console.log('Payload keys:', Object.keys(context.payload));
             // Handle both issue comments and PR review comments
