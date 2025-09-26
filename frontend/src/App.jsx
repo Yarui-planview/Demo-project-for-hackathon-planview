@@ -100,7 +100,7 @@ function App() {
     }
   };
 
-  const exportLibary = () => {
+const exportLibrary = () => {
     const userToken = localStorage.getItem('userToken') || 'guest123';
     const exportData = {
       songs: songs,
