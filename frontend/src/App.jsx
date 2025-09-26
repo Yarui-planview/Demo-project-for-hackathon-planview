@@ -98,7 +98,7 @@ function App() {
     } catch (err) {
       console.error('Error updating song:', err);
       alert('Failed to update song');
-    }
+const [isDeleting, setIsDeleting] = useState(false);
   };
 
   const handleClearAll = async () => {
