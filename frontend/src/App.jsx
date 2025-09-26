@@ -98,6 +98,24 @@ function App() {
     } catch (err) {
       console.error('Error updating song:', err);
       alert('Failed to update song');
+const [isDeleting, setIsDeleting] = useState(false);
+  };
+
+  const handleClearAll = async () => {
+    if (!window.confirm('Are you sure you want to delete ALL songs? This cannot be undone.')) {
+      return;
+    }
+
+    try {
+      // Delete all songs one by one
+      for (const song of songs) {
+        await musicAPI.deleteSong(song.id);
+      }
+      setSongs([]);
+      setFilteredSongs([]);
+    } catch (err) {
+      console.error('Error clearing all songs:', err);
+      alert('Failed to clear all songs');
     }
   };
 
@@ -140,12 +158,21 @@ function App() {
               <h1 className="text-3xl font-bold text-gray-900">🎵 Music Library</h1>
               <p className="text-gray-600">Manage your personal music collection</p>
             </div>
-            <button
-              onClick={() => setShowAddForm(true)}
-              className="px-6 py-3 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-            >
-              Add Song
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={handleClearAll}
+                disabled={songs.length === 0}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+              >
+                Clear All
+              </button>
+              <button
+                onClick={() => setShowAddForm(true)}
+                className="px-6 py-3 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+              >
+                Add Song
+              </button>
+            </div>
           </div>
         </div>
       </header>
