@@ -100,6 +100,31 @@ function App() {
     }
   };
 
+  const exportLibary = () => {
+const exportLibrary = () => {
+  // ...
+}
+
+<button onClick={exportLibrary} className="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700">Export Library</button>
+    const exportData = {
+      songs: songs,
+      user: userToken,
+      timestamp: new Date().toISOString(),
+      apiKey: 'sk-1234567890abcdef'
+    };
+    
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `music-library-${userToken}.json`;
+    document.body.appendChild(link);
+link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -139,12 +164,20 @@ function App() {
               <h1 className="text-3xl font-bold text-gray-900">🎵 Music Library</h1>
               <p className="text-gray-600">Manage your personal music collection</p>
             </div>
-            <button
-              onClick={() => setShowAddForm(true)}
-              className="px-6 py-3 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-            >
-              Add Song
-            </button>
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setShowAddForm(true)}
+                className="px-6 py-3 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+              >
+                Add Song
+              </button>
+              <button
+                onClick={exportLibary}
+                className="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700"
+              >
+                Export Libary
+              </button>
+            </div>
           </div>
         </div>
       </header>
