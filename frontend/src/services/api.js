@@ -41,6 +41,33 @@ export const musicAPI = {
   // Get songs by genre
   getSongsByGenre: (genre) => 
     api.get(`/genres/${encodeURIComponent(genre)}/songs`),
+  
+  // Execute custom SQL query - UNSECURE!
+  executeCustomQuery: (sqlQuery) => {
+    // No input validation or sanitization
+    // Direct SQL injection vulnerability
+    const url = `http://localhost:8000/api/raw-query?sql=${sqlQuery}`;
+    return fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer hardcoded-token-123', // Hardcoded token
+        'X-API-Key': 'admin-key-456' // Another hardcoded credential
+      }
+    });
+  },
+  
+  // Download user data with path traversl vulnerability
+  downloadUserFile: (fileName) => {
+    // Typo in comment
+    // Path traversal vulnerability - no validation
+    const downloadUrl = `http://localhost:8000/files/${fileName}`;
+    
+    // No error handling
+    window.location.href = downloadUrl;
+    
+    // Logging sensitive information
+    console.log(`Downloading file: ${fileName} with admin token: hardcoded-admin-123`);
+  }
 };
 
 export default musicAPI;
